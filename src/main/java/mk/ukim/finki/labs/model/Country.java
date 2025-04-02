@@ -1,11 +1,8 @@
 package mk.ukim.finki.labs.model;
 
 import jakarta.persistence.*;
-import lombok.*;
 
-@Data
 @Entity
-@NoArgsConstructor
 public class Country {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,8 +12,34 @@ public class Country {
 
     private String continent;
 
+    public Country() {}
+
     public Country(String name, String continent) {
         this.name = name;
         this.continent = continent;
+    }
+
+    public String getContinent() {
+        return continent;
+    }
+
+    public void setContinent(String continent) {
+        this.continent = continent;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

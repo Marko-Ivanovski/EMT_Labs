@@ -3,11 +3,10 @@ package mk.ukim.finki.labs.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Host {
+public class Guest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,21 +18,16 @@ public class Host {
     @ManyToOne
     private Country country;
 
-    @ManyToMany
-    @JoinTable(
-            name = "host_like",
-            joinColumns = @JoinColumn(name = "host_id"),
-            inverseJoinColumns = @JoinColumn(name = "guest_id"))
-    @JsonIgnore
-    private List<Guest> guests;
+    @ManyToMany(mappedBy = "guests")
+    private List<Host> hosts;
 
-    public Host() {}
+    public Guest() {}
 
-    public Host(String name, String surname, Country country, List<Guest> guests) {
+    public Guest(String name, String surname, Country country, List<Host> hosts) {
         this.name = name;
         this.surname = surname;
         this.country = country;
-        this.guests = new ArrayList<>();
+        this.hosts = hosts;
     }
 
     public Long getId() {
@@ -68,11 +62,11 @@ public class Host {
         this.country = country;
     }
 
-    public List<Guest> getGuests() {
-        return guests;
+    public List<Host> getHosts() {
+        return hosts;
     }
 
-    public void setGuests(List<Guest> guests) {
-        this.guests = guests;
+    public void setHosts(List<Host> hosts) {
+        this.hosts = hosts;
     }
 }
