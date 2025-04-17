@@ -1,6 +1,6 @@
 package mk.ukim.finki.labs.web;
 
-import mk.ukim.finki.labs.model.Guest;
+import mk.ukim.finki.labs.model.domain.Guest;
 import mk.ukim.finki.labs.service.GuestService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

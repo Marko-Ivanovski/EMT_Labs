@@ -1,9 +1,12 @@
 package mk.ukim.finki.labs.config;
 
 import jakarta.annotation.PostConstruct;
+import mk.ukim.finki.labs.model.domain.Accommodation;
+import mk.ukim.finki.labs.model.domain.Country;
+import mk.ukim.finki.labs.model.domain.Guest;
+import mk.ukim.finki.labs.model.domain.Host;
 import mk.ukim.finki.labs.model.enumerations.Category;
 import org.springframework.stereotype.Component;
-import mk.ukim.finki.labs.model.*;
 import mk.ukim.finki.labs.repository.*;
 
 import java.util.ArrayList;

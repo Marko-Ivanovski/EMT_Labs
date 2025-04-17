@@ -22,11 +22,18 @@ public class WebSecurityConfig {
 
     @Bean
     public InMemoryUserDetailsManager userDetailsService() {
-        UserDetails admin = User.withUsername("admin")
-                .password(passwordEncoder.encode("admin"))
-                .roles("ADMIN")
+        // Creating users with roles USER and HOST
+        UserDetails user = User.withUsername("user")
+                .password(passwordEncoder.encode("user"))
+                .roles("USER")
                 .build();
-        return new InMemoryUserDetailsManager(admin);
+
+        UserDetails host = User.withUsername("host")
+                .password(passwordEncoder.encode("host"))
+                .roles("HOST")
+                .build();
+
+        return new InMemoryUserDetailsManager(user, host);
     }
 
     @Bean

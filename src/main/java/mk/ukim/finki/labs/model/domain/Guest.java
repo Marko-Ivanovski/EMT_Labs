@@ -1,6 +1,5 @@
-package mk.ukim.finki.labs.model;
+package mk.ukim.finki.labs.model.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;

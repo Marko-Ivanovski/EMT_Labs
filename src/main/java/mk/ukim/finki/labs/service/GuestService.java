@@ -1,7 +1,7 @@
 package mk.ukim.finki.labs.service;
 
-import mk.ukim.finki.labs.model.Guest;
-import mk.ukim.finki.labs.model.Host;
+import mk.ukim.finki.labs.model.domain.Guest;
+import mk.ukim.finki.labs.model.domain.Host;
 import mk.ukim.finki.labs.repository.GuestRepository;
 import mk.ukim.finki.labs.repository.HostRepository;
 import org.springframework.stereotype.Service;

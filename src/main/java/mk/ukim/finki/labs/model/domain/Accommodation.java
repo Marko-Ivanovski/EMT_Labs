@@ -1,4 +1,4 @@
-package mk.ukim.finki.labs.model;
+package mk.ukim.finki.labs.model.domain;
 
 import jakarta.persistence.*;
 import mk.ukim.finki.labs.model.enumerations.Category;
@@ -29,6 +29,10 @@ public class Accommodation {
         this.host = host;
         this.numRooms = numRooms;
         this.rented = rented;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
