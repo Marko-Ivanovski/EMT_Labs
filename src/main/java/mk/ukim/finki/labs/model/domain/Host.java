@@ -19,21 +19,12 @@ public class Host {
     @ManyToOne
     private Country country;
 
-    @ManyToMany
-    @JoinTable(
-            name = "host_like",
-            joinColumns = @JoinColumn(name = "host_id"),
-            inverseJoinColumns = @JoinColumn(name = "guest_id"))
-    @JsonIgnore
-    private List<Guest> guests;
-
     public Host() {}
 
-    public Host(String name, String surname, Country country, List<Guest> guests) {
+    public Host(String name, String surname, Country country) {
         this.name = name;
         this.surname = surname;
         this.country = country;
-        this.guests = new ArrayList<>();
     }
 
     public Long getId() {
@@ -66,13 +57,5 @@ public class Host {
 
     public void setCountry(Country country) {
         this.country = country;
-    }
-
-    public List<Guest> getGuests() {
-        return guests;
-    }
-
-    public void setGuests(List<Guest> guests) {
-        this.guests = guests;
     }
 }

@@ -4,36 +4,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 public class WebSecurityConfig {
-    private final PasswordEncoder passwordEncoder;
 
-    public WebSecurityConfig(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
+    private final UserDetailsService userDetailsService;
 
-    @Bean
-    public InMemoryUserDetailsManager userDetailsService() {
-        // Creating users with roles USER and HOST
-        UserDetails user = User.withUsername("user")
-                .password(passwordEncoder.encode("user"))
-                .roles("USER")
-                .build();
-
-        UserDetails host = User.withUsername("host")
-                .password(passwordEncoder.encode("host"))
-                .roles("HOST")
-                .build();
-
-        return new InMemoryUserDetailsManager(user, host);
+    public WebSecurityConfig(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Bean
@@ -41,12 +23,12 @@ public class WebSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
+                .userDetailsService(userDetailsService)
                 .formLogin(withDefaults())
                 .logout(logout -> logout.logoutSuccessUrl("/"));
-
         return http.build();
     }
 }

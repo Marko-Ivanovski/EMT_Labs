@@ -30,22 +30,18 @@ public class AccommodationController {
     @Operation(summary = "Get accommodation by ID", description = "Retrieve accommodation details by ID.")
     @GetMapping("/{id}")
     public ResponseEntity<DisplayAccommodationDto> findById(@PathVariable Long id) {
-        DisplayAccommodationDto dto = accommodationApplicationService.findById(id);
-        if (dto == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(dto);
+        return accommodationApplicationService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // POST /api/accommodations
     @Operation(summary = "Create a new accommodation", description = "Create a new accommodation with provided details.")
     @PostMapping
     public ResponseEntity<DisplayAccommodationDto> save(@RequestBody CreateAccommodationDto dto) {
-        DisplayAccommodationDto saved = accommodationApplicationService.save(dto);
-        if (saved == null) {
-            return ResponseEntity.badRequest().build(); // e.g. Host not found
-        }
-        return ResponseEntity.ok(saved);
+        return accommodationApplicationService.create(dto)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     // PUT /api/accommodations/{id}
@@ -53,11 +49,9 @@ public class AccommodationController {
     @PutMapping("/{id}")
     public ResponseEntity<DisplayAccommodationDto> update(@PathVariable Long id,
                                                           @RequestBody CreateAccommodationDto dto) {
-        DisplayAccommodationDto updated = accommodationApplicationService.update(id, dto);
-        if (updated == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(updated);
+        return accommodationApplicationService.update(id, dto)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // DELETE /api/accommodations/{id}
@@ -68,14 +62,12 @@ public class AccommodationController {
         return ResponseEntity.noContent().build();
     }
 
-    // PUT /api/accommodations/{id}/rent
+    // PUT /api/accommodations/rent/{id}
     @Operation(summary = "Mark accommodation as rented", description = "Mark an accommodation as rented by ID.")
     @PutMapping("/rent/{id}")
     public ResponseEntity<DisplayAccommodationDto> markAsRented(@PathVariable Long id) {
-        DisplayAccommodationDto rentedAcc = accommodationApplicationService.markAsRented(id);
-        if (rentedAcc == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(rentedAcc);
+        return accommodationApplicationService.markAsRented(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

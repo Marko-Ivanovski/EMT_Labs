@@ -7,6 +7,6 @@ import java.util.ArrayList;
 
 public record CreateHostDto(String name, String surname, Long countryId) {
     public Host toHost(Country country) {
-        return new Host(name, surname, country, new ArrayList<>());
+        return new Host(name, surname, country);
     }
 }

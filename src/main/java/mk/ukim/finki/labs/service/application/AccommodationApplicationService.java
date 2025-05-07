@@ -1,17 +1,19 @@
 package mk.ukim.finki.labs.service.application;
 
-import mk.ukim.finki.labs.model.domain.Accommodation;
-import mk.ukim.finki.labs.model.domain.Host;
-import mk.ukim.finki.labs.service.domain.HostDomainService;
-import org.springframework.stereotype.Service;
-import mk.ukim.finki.labs.service.domain.AccommodationDomainService;
 import mk.ukim.finki.labs.dto.accommodation.CreateAccommodationDto;
 import mk.ukim.finki.labs.dto.accommodation.DisplayAccommodationDto;
+import mk.ukim.finki.labs.model.domain.Accommodation;
+import mk.ukim.finki.labs.model.domain.Host;
+import mk.ukim.finki.labs.service.domain.AccommodationDomainService;
+import mk.ukim.finki.labs.service.domain.HostDomainService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AccommodationApplicationService {
+
     private final AccommodationDomainService accommodationDomainService;
     private final HostDomainService hostDomainService;
 
@@ -21,35 +23,39 @@ public class AccommodationApplicationService {
     }
 
     public List<DisplayAccommodationDto> findAll() {
-        return accommodationDomainService.findAll().stream().map(DisplayAccommodationDto::from).toList();
+        return DisplayAccommodationDto.from(accommodationDomainService.findAll());
     }
 
-    public DisplayAccommodationDto findById(Long id) {
-        return accommodationDomainService.findById(id).map(DisplayAccommodationDto::from).orElse(null);
+    public Optional<DisplayAccommodationDto> findById(Long id) {
+        return accommodationDomainService.findById(id)
+                .map(DisplayAccommodationDto::from);
     }
 
-    public DisplayAccommodationDto save(CreateAccommodationDto createAccommodationDto) {
-        Host host = hostDomainService.findById(createAccommodationDto.hostId());
+    public Optional<DisplayAccommodationDto> create(CreateAccommodationDto dto) {
+        Optional<Host> hostOpt = hostDomainService.findById(dto.hostId());
+        if (hostOpt.isEmpty()) return Optional.empty();
 
-        if (host == null) {
-            return null;
-        } else {
-            Accommodation accommodation = createAccommodationDto.toAccommodation(host);
-            accommodationDomainService.save(accommodation);
-            return DisplayAccommodationDto.from(accommodation);
-        }
+        Accommodation accommodation = dto.toAccommodation(hostOpt.get());
+        accommodationDomainService.save(accommodation);
+
+        return Optional.of(DisplayAccommodationDto.from(accommodation));
+    }
+
+    public Optional<DisplayAccommodationDto> update(Long id, CreateAccommodationDto dto) {
+        Optional<Host> hostOpt = hostDomainService.findById(dto.hostId());
+        if (hostOpt.isEmpty()) return Optional.empty();
+
+        Accommodation updated = dto.toAccommodation(hostOpt.get());
+        return accommodationDomainService.update(id, updated)
+                .map(DisplayAccommodationDto::from);
     }
 
     public void delete(Long id) {
         accommodationDomainService.delete(id);
     }
 
-    public DisplayAccommodationDto update(Long id, CreateAccommodationDto createAccommodationDto) {
-        Host host = hostDomainService.findById(createAccommodationDto.hostId());
-        return accommodationDomainService.update(id, createAccommodationDto.toAccommodation(host)).map(DisplayAccommodationDto::from).orElse(null);
-    }
-
-    public DisplayAccommodationDto markAsRented(Long id) {
-        return accommodationDomainService.markAsRented(id).map(DisplayAccommodationDto::from).orElse(null);
+    public Optional<DisplayAccommodationDto> markAsRented(Long id) {
+        return accommodationDomainService.markAsRented(id)
+                .map(DisplayAccommodationDto::from);
     }
 }
