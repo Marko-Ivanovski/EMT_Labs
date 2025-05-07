@@ -3,8 +3,17 @@ package mk.ukim.finki.labs.model.domain;
 import jakarta.persistence.*;
 import mk.ukim.finki.labs.model.enumerations.Role;
 
+@NamedEntityGraph(
+        name = "User.withoutReservations",
+        attributeNodes = {
+                @NamedAttributeNode("id"),
+                @NamedAttributeNode("username"),
+                @NamedAttributeNode("password"),
+                @NamedAttributeNode("role")
+        }
+)
 @Entity
-@Table(name = "users") // avoid conflict with SQL "user"
+@Table(name = "users")
 public class User {
 
     @Id

@@ -1,74 +1,183 @@
 # Labs - Accommodation API
 
-This is a Spring Boot REST API for managing accommodations for rent.
+This is a Spring Boot REST API for managing accommodations, users, hosts, countries, and temporary reservations. It supports user registration, login, and role-based access using Spring Security, as well as reporting endpoints powered by materialized views.
 
-## **Authentication**
-  **Username:** `admin`  
-  **Password:** `admin`
+---
 
-## **API Endpoints**
+## Authentication
 
-### **1. Get All Accommodations**
-**GET** `/api/accommodations`
+Authentication is handled via Spring Security using form login.
 
-### **2. Create new Accommodation**
-**POST** `/api/accommodations`  
-**Request:**
+### Default Users
+
+The following users are seeded on startup via the `DataInitializer`:
+
+| Username | Password | Role |
+| -------- | -------- | ---- |
+| `user`   | `user`   | USER |
+| `host`   | `host`   | HOST |
+
+---
+
+## Database
+
+* PostgreSQL (via Docker)
+* Schema initialized using `schema.sql` with materialized views
+
+To start the DB:
+
+```bash
+docker-compose up -d
+```
+
+---
+
+## API Endpoints
+
+### 1. Accommodations
+
+* **GET** `/api/accommodations`
+* **GET** `/api/accommodations/{id}`
+* **POST** `/api/accommodations`
+
 ```json
 {
   "name": "Beach House",
   "category": "HOUSE",
-  "host": {
-    "id": 1,
-    "name": "John",
-    "surname": "Doe",
-    "country": {
-      "id": 1,
-      "name": "Macedonia",
-      "continent": "Europe"
-    }
-  },
-  "numRooms": 5,
-  "rented": false
+  "hostId": 1,
+  "numRooms": 5
 }
 ```
 
-### **3. Update an Existing Accommodation**
-**PUT** `/api/accommodations/{id}`  
-**Request:**
+* **PUT** `/api/accommodations/{id}`
+
 ```json
 {
-  "name": "Renovated Beach Home",
+  "name": "Updated Beach House",
   "category": "HOUSE",
-  "host": {
-    "id": 1,
-    "name": "John",
-    "surname": "Doe",
-    "country": {
-      "id": 1,
-      "name": "Macedonia",
-      "continent": "Europe"
-    }
-  },
-  "numRooms": 7,
-  "rented": false
+  "hostId": 1,
+  "numRooms": 6
 }
 ```
 
-### **4. Delete an Accommodation**
-**DELETE** `/api/accommodations/{id}`
+* **DELETE** `/api/accommodations/{id}`
+* **PUT** `/api/accommodations/rent/{id}`
+* **GET** `/api/accommodations/by-host`
 
-### **5. Rent an Accommodation**
-**PUT** `/api/accommodations/rent/{id}`
+  * Returns number of accommodations per host (materialized view, refreshed daily)
 
-## H2 Database Console
+### 2. Hosts
 
-You can access the H2 Database Console at: [http://localhost:8080/h2](http://localhost:8080/h2)
+* **GET** `/api/hosts`
+* **GET** `/api/hosts/{id}`
+* **POST** `/api/hosts`
 
-**JDBC URL:** `jdbc:h2:mem:emt-2025`  
-**Username:** `emt`  
-**Password:** `emt`
+```json
+{
+  "name": "Alice",
+  "surname": "Smith",
+  "countryId": 1
+}
+```
 
-## **Swagger UI**
+* **PUT** `/api/hosts/{id}`
+* **DELETE** `/api/hosts/{id}`
+* **GET** `/api/hosts/by-country`
 
-You can access the Swagger UI at: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+  * Returns number of hosts per country (materialized view, refreshed on host add/update/delete)
+
+### 3. Countries
+
+* **GET** `/api/countries`
+* **GET** `/api/countries/{id}`
+* **POST** `/api/countries`
+
+```json
+{
+  "name": "France",
+  "continent": "Europe"
+}
+```
+
+* **PUT** `/api/countries/{id}`
+* **DELETE** `/api/countries/{id}`
+
+### 4. Authentication
+
+* **POST** `/api/auth/register`
+
+```json
+{
+  "username": "newuser",
+  "password": "securepass",
+  "role": "USER"
+}
+```
+
+* **POST** `/api/auth/login`
+
+```json
+{
+  "username": "user",
+  "password": "user"
+}
+```
+
+* **POST** `/api/auth/logout`
+
+### 5. Temporary Reservations
+
+Users can maintain a temporary list of accommodations before confirming reservations.
+
+* **GET** `/api/reservations`
+* **POST** `/api/reservations`
+
+```json
+{
+  "accommodationId": 2
+}
+```
+
+* **DELETE** `/api/reservations/{id}`
+* **POST** `/api/reservations/confirm`
+
+---
+
+## Sample Usage with curl
+
+### Authentication
+
+```bash
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"user", "password":"user"}'
+```
+
+### Create Accommodation
+
+```bash
+curl -X POST http://localhost:8080/api/accommodations \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Cozy Flat", "category":"APARTMENT", "hostId":1, "numRooms":3}'
+```
+
+### Get Host Stats
+
+```bash
+curl http://localhost:8080/api/accommodations/by-host
+```
+
+### Get Country Stats
+
+```bash
+curl http://localhost:8080/api/hosts/by-country
+```
+
+---
+
+## Swagger UI
+
+Use Swagger to explore and test the API:
+
+* URL: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+* Requires login — use `user/user` or `host/host`

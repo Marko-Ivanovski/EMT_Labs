@@ -1,6 +1,7 @@
 package mk.ukim.finki.labs.web;
 
 import io.swagger.v3.oas.annotations.Operation;
+import mk.ukim.finki.labs.dto.accommodation.CountAccommodationDto;
 import mk.ukim.finki.labs.dto.accommodation.CreateAccommodationDto;
 import mk.ukim.finki.labs.dto.accommodation.DisplayAccommodationDto;
 import mk.ukim.finki.labs.service.application.AccommodationApplicationService;
@@ -70,4 +71,12 @@ public class AccommodationController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    // GET /api/accommodations/by-host
+    @GetMapping("/by-host")
+    @Operation(summary = "Get number of accommodations per host")
+    public ResponseEntity<List<CountAccommodationDto>> getAccommodationsByHost() {
+        return ResponseEntity.ok(accommodationApplicationService.countAccommodationsByHost());
+    }
+
 }

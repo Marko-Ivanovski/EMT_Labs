@@ -4,6 +4,7 @@ import mk.ukim.finki.labs.model.domain.User;
 import mk.ukim.finki.labs.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,5 +22,9 @@ public class UserDomainService {
 
     public void save(User user) {
         userRepository.save(user);
+    }
+
+    public List<User> findAll() {
+        return userRepository.findAll();
     }
 }
