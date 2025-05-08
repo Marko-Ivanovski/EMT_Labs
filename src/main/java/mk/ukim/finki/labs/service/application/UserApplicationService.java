@@ -2,11 +2,13 @@ package mk.ukim.finki.labs.service.application;
 
 import mk.ukim.finki.labs.dto.auth.LoginDto;
 import mk.ukim.finki.labs.dto.auth.RegisterDto;
+import mk.ukim.finki.labs.dto.user.DisplayUserDto;
 import mk.ukim.finki.labs.model.domain.User;
 import mk.ukim.finki.labs.service.domain.UserDomainService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,5 +37,11 @@ public class UserApplicationService {
     public Optional<User> login(LoginDto dto) {
         return userDomainService.findByUsername(dto.username())
                 .filter(user -> passwordEncoder.matches(dto.password(), user.getPassword()));
+    }
+
+    public List<DisplayUserDto> findAll() {
+        return userDomainService.findAll().stream()
+                .map(DisplayUserDto::from)
+                .toList();
     }
 }

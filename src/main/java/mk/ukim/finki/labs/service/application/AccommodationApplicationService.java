@@ -1,5 +1,6 @@
 package mk.ukim.finki.labs.service.application;
 
+import mk.ukim.finki.labs.dto.accommodation.CountAccommodationDto;
 import mk.ukim.finki.labs.dto.accommodation.CreateAccommodationDto;
 import mk.ukim.finki.labs.dto.accommodation.DisplayAccommodationDto;
 import mk.ukim.finki.labs.model.domain.Accommodation;
@@ -57,5 +58,14 @@ public class AccommodationApplicationService {
     public Optional<DisplayAccommodationDto> markAsRented(Long id) {
         return accommodationDomainService.markAsRented(id)
                 .map(DisplayAccommodationDto::from);
+    }
+
+    public List<CountAccommodationDto> countAccommodationsByHost() {
+        return accommodationDomainService.countAccommodationsByHostRaw().stream()
+                .map(row -> new CountAccommodationDto(
+                        ((Number) row[0]).longValue(),
+                        (String) row[1],
+                        ((Number) row[2]).longValue()
+                )).toList();
     }
 }

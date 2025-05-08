@@ -49,4 +49,8 @@ public class AccommodationDomainService {
                     return accommodationRepository.save(acc);
                 });
     }
+
+    public List<Object[]> countAccommodationsByHostRaw() {
+        return accommodationRepository.countAccommodationsByHost();
+    }
 }

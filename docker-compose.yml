@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:15
+    container_name: accommodation-db
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: emt2025
+      POSTGRES_USER: emt
+      POSTGRES_PASSWORD: emt
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
