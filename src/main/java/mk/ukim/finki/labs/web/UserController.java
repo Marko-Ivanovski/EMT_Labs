@@ -1,6 +1,7 @@
 package mk.ukim.finki.labs.web;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import mk.ukim.finki.labs.dto.user.DisplayUserDto;
 import mk.ukim.finki.labs.service.application.UserApplicationService;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ public class UserController {
     }
 
     // GET /api/users
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping
     @Operation(summary = "Get all users (without reservations)")
     public ResponseEntity<List<DisplayUserDto>> findAll() {
