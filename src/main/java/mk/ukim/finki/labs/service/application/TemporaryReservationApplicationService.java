@@ -7,6 +7,7 @@ import mk.ukim.finki.labs.model.domain.TemporaryReservation;
 import mk.ukim.finki.labs.model.domain.User;
 import mk.ukim.finki.labs.service.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -54,6 +55,7 @@ public class TemporaryReservationApplicationService {
         reservationDomainService.delete(id);
     }
 
+    @Transactional
     public void confirmAll(String username) {
         Optional<User> userOpt = userDomainService.findByUsername(username);
         if (userOpt.isEmpty()) return;
